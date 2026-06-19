@@ -1,0 +1,16 @@
+# Netlify reads this from the repo ROOT.
+# base = app  -> Netlify runs the build inside the app/ folder
+# publish     -> resolved relative to base, so app/dist
+[build]
+  base = "app"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA fallback — every route serves index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

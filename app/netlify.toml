@@ -1,12 +1,5 @@
-[build]
-  base = "app"
-  command = "npm run build"
-  publish = "app/dist"
-
-[build.environment]
-  NODE_VERSION = "20"
-
-# SPA fallback — every route serves index.html
+# Build configuration lives in the repo-root netlify.toml (base = "app").
+# This file only keeps the SPA fallback so client-side routes resolve.
 [[redirects]]
   from = "/*"
   to = "/index.html"
