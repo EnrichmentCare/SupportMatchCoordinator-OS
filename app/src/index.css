@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===========================================================================
+   Support Match design tokens. Exact brand hex to be locked from live CSS;
+   change these variables only — nothing else references raw colours.
+   =========================================================================== */
+:root {
+  --brand-50: #faf7fc;
+  --brand-100: #ede6f6;
+  --brand-200: #d9c8ec;
+  --brand-400: #8b5cc4;
+  --brand-500: #6d28d9;
+  --brand-600: #5e2bb0;
+  --brand-700: #5b2a86;
+
+  --accent-100: #fce4f0;
+  --accent-400: #f06ba8;
+  --accent-500: #e6398a;
+  --accent-600: #c92d76;
+
+  --ink-900: #1a1523;
+  --ink-500: #6b6577;
+  --line: #e7e4ec;
+  --canvas: #faf9fc;
+  --surface: #ffffff;
+
+  --status-green: #12805c;
+  --status-amber: #b26a00;
+  --status-red: #c0341d;
+  --status-info: #2563eb;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-canvas text-ink font-sans antialiased;
+}
+
+/* Accessible focus ring everywhere */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

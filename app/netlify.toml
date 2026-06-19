@@ -1,0 +1,13 @@
+[build]
+  base = "app"
+  command = "npm run build"
+  publish = "app/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA fallback — every route serves index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
