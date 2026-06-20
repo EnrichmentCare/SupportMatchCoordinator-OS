@@ -1,4 +1,4 @@
-// Minimal hand-written types for Phase 0.
+// Hand-written domain types for Phase 0/1.
 // Regenerate the full set after migrations with:
 //   supabase gen types typescript --project-id wkviryslxklnomrphxix > src/types/database.ts
 
@@ -14,6 +14,10 @@ export type OrgRole =
 
 export type RagStatus = "green" | "amber" | "red";
 export type ParticipantStatus = "prospect" | "active" | "on_hold" | "exited";
+export type PlanManagement = "agency_managed" | "plan_managed" | "self_managed";
+export type GenderPref = "male" | "female" | "no_preference" | "other";
+export type TaskStatus = "open" | "in_progress" | "blocked" | "done" | "cancelled";
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
 export type SwrStatus =
   | "requested"
   | "received"
@@ -23,6 +27,22 @@ export type SwrStatus =
   | "active"
   | "cancelled"
   | "closed";
+
+export type TimelineEventType =
+  | "note"
+  | "call"
+  | "email"
+  | "sms"
+  | "referral"
+  | "document"
+  | "meeting"
+  | "task"
+  | "support_worker_request"
+  | "goal"
+  | "funding"
+  | "consent"
+  | "status_change"
+  | "system";
 
 export interface Organisation {
   id: string;
@@ -59,14 +79,115 @@ export interface Participant {
   first_name: string;
   last_name: string;
   preferred_name: string | null;
+  date_of_birth: string | null;
+  email: string | null;
+  phone: string | null;
+  ndis_number: string | null;
+  plan_management: PlanManagement | null;
   status: ParticipantStatus;
   rag_status: RagStatus;
   rag_reason: string | null;
+  address_line: string | null;
   suburb: string | null;
   state: string | null;
   postcode: string | null;
+  gender_preference: GenderPref | null;
+  interests: string[] | null;
+  languages: string[] | null;
+  cultural_background: string | null;
+  support_needs_summary: string | null;
+  hours_per_week: number | null;
+  risk_flags: string[] | null;
+  risk_notes: string | null;
   assigned_coordinator: string | null;
+  created_at: string;
   updated_at: string;
+}
+
+export type ParticipantInput = Omit<
+  Participant,
+  "id" | "org_id" | "created_at" | "updated_at" | "assigned_coordinator"
+>;
+
+export interface Note {
+  id: string;
+  org_id: string;
+  participant_id: string | null;
+  body: string;
+  is_pinned: boolean;
+  created_at: string;
+  created_by: string | null;
+}
+
+export interface Task {
+  id: string;
+  org_id: string;
+  title: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  due_date: string | null;
+  assigned_to: string | null;
+  participant_id: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export interface TimelineEvent {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  event_type: TimelineEventType;
+  title: string;
+  body: string | null;
+  ref_table: string | null;
+  ref_id: string | null;
+  occurred_at: string;
+}
+
+export interface Consent {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  type: string;
+  status: string;
+  granted_by: string | null;
+  method: string | null;
+  granted_at: string;
+}
+
+export interface SupportWorkerRequest {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  consent_id: string;
+  status: SwrStatus;
+  reference: string;
+  suburb: string | null;
+  postcode: string | null;
+  state: string | null;
+  gender_preference: GenderPref | null;
+  interests: string[] | null;
+  languages: string[] | null;
+  support_needs_summary: string | null;
+  hours_per_week: number | null;
+  funding_type: PlanManagement | null;
+  internal_notes: string | null;
+  requested_at: string;
+  placed_at: string | null;
+}
+
+export interface DocumentRow {
+  id: string;
+  org_id: string;
+  participant_id: string | null;
+  type: string;
+  title: string;
+  storage_path: string;
+  mime_type: string | null;
+  size_bytes: number | null;
+  version: number;
+  created_at: string;
 }
 
 export interface SupportMatchLead {
@@ -85,44 +206,4 @@ export interface SupportMatchLead {
   funding_type: string | null;
   requested_at: string;
   placed_at: string | null;
-}
-
-// Loose Database shape so the typed client compiles. Tables we read directly:
-export interface Database {
-  public: {
-    Tables: {
-      organisations: { Row: Organisation; Insert: Partial<Organisation>; Update: Partial<Organisation> };
-      profiles: { Row: Profile; Insert: Partial<Profile>; Update: Partial<Profile> };
-      memberships: { Row: Membership; Insert: Partial<Membership>; Update: Partial<Membership> };
-      participants: { Row: Participant; Insert: Partial<Participant>; Update: Partial<Participant> };
-    };
-    Views: {
-      support_match_leads: { Row: SupportMatchLead };
-    };
-    Functions: {
-      create_organisation: {
-        Args: {
-          p_name: string;
-          p_abn?: string | null;
-          p_state?: string | null;
-          p_suburb?: string | null;
-          p_postcode?: string | null;
-          p_phone?: string | null;
-          p_email?: string | null;
-        };
-        Returns: Organisation;
-      };
-      submit_support_worker_request: {
-        Args: { p_participant_id: string; p_consent_id: string; p_internal_notes?: string | null };
-        Returns: unknown;
-      };
-      sm_list_leads: { Args: Record<string, never>; Returns: SupportMatchLead[] };
-      sm_update_lead_status: {
-        Args: { p_request_id: string; p_status: SwrStatus; p_note?: string | null };
-        Returns: SupportMatchLead;
-      };
-      swr_funnel: { Args: { p_org: string }; Returns: { status: SwrStatus; count: number }[] };
-    };
-    Enums: Record<string, never>;
-  };
 }

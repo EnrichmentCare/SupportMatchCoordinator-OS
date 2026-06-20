@@ -7,6 +7,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
+import Participants from "./pages/Participants";
+import ParticipantDetail from "./pages/ParticipantDetail";
+import Tasks from "./pages/Tasks";
 import Placeholder from "./pages/Placeholder";
 import Leads from "./pages/admin/Leads";
 
@@ -55,11 +58,12 @@ export default function App() {
           {/* Coordinator app */}
           <Route path="/" element={<RequireAuth><AppLayout /></RequireAuth>}>
             <Route index element={<Dashboard />} />
-            <Route path="participants" element={<Placeholder title="Participants" phase="Phase 1" />} />
+            <Route path="participants" element={<Participants />} />
+            <Route path="participants/:id" element={<ParticipantDetail />} />
             <Route path="referrals" element={<Placeholder title="Referrals" phase="Phase 2" />} />
             <Route path="providers" element={<Placeholder title="Providers" phase="Phase 2" />} />
             <Route path="funding" element={<Placeholder title="Funding" phase="Phase 2" />} />
-            <Route path="tasks" element={<Placeholder title="Tasks" phase="Phase 1" />} />
+            <Route path="tasks" element={<Tasks />} />
           </Route>
 
           {/* Separate Support Match admin surface */}

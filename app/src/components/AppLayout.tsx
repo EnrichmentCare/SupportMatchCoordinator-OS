@@ -14,7 +14,7 @@ const NAV: NavItem[] = [
   { to: "/referrals", label: "Referrals", icon: GitBranch, soon: true },
   { to: "/providers", label: "Providers", icon: Building2, soon: true },
   { to: "/funding", label: "Funding", icon: Wallet, soon: true },
-  { to: "/tasks", label: "Tasks", icon: CheckSquare, soon: true },
+  { to: "/tasks", label: "Tasks", icon: CheckSquare },
 ];
 
 export function AppLayout() {
