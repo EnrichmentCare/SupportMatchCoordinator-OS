@@ -304,6 +304,69 @@ export interface DocumentRow {
   created_at: string;
 }
 
+export type ProviderCapacity = "open" | "limited" | "closed" | "unknown";
+export type ReferralStage =
+  | "created" | "sent" | "acknowledged" | "assessment" | "accepted" | "commenced" | "declined" | "withdrawn";
+
+export interface Provider {
+  id: string;
+  org_id: string;
+  name: string;
+  abn: string | null;
+  description: string | null;
+  services: string[] | null;
+  service_areas: string[] | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  ndis_registered: boolean | null;
+  capacity_status: ProviderCapacity;
+  capacity_notes: string | null;
+  created_at: string;
+}
+
+export interface ProviderContact {
+  id: string;
+  org_id: string;
+  provider_id: string;
+  name: string;
+  role: string | null;
+  phone: string | null;
+  email: string | null;
+  notes: string | null;
+}
+
+export interface SavedProvider {
+  id: string;
+  org_id: string;
+  provider_id: string;
+  user_id: string | null;
+  notes: string | null;
+}
+
+export interface ProviderEngagement {
+  id: string;
+  org_id: string;
+  provider_id: string;
+  engagement_type: string | null;
+  response_time_hours: number | null;
+  summary: string | null;
+  occurred_at: string;
+}
+
+export interface Referral {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  provider_id: string | null;
+  service_type: string | null;
+  stage: ReferralStage;
+  notes: string | null;
+  sent_at: string | null;
+  responded_at: string | null;
+  created_at: string;
+}
+
 export interface SupportMatchLead {
   request_id: string;
   reference: string;

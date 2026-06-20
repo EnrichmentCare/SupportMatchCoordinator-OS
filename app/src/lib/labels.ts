@@ -29,6 +29,29 @@ export const GOAL_STATUS_TONE: Record<GoalStatus, "neutral" | "brand" | "green" 
   discontinued: "neutral",
 };
 
+import type { ReferralStage, ProviderCapacity } from "../types/database";
+
+export const REFERRAL_BOARD: ReferralStage[] = [
+  "created", "sent", "acknowledged", "assessment", "accepted", "commenced",
+];
+export const REFERRAL_STAGE_LABEL: Record<ReferralStage, string> = {
+  created: "Created",
+  sent: "Sent",
+  acknowledged: "Acknowledged",
+  assessment: "Assessment",
+  accepted: "Accepted",
+  commenced: "Commenced",
+  declined: "Declined",
+  withdrawn: "Withdrawn",
+};
+
+export const CAPACITY_LABEL: Record<ProviderCapacity, string> = {
+  open: "Open", limited: "Limited", closed: "Closed", unknown: "Unknown",
+};
+export const CAPACITY_TONE: Record<ProviderCapacity, "green" | "amber" | "red" | "neutral"> = {
+  open: "green", limited: "amber", closed: "red", unknown: "neutral",
+};
+
 export function money(n?: number | null) {
   if (n == null) return "—";
   return "$" + n.toLocaleString("en-AU", { maximumFractionDigits: 0 });

@@ -10,7 +10,10 @@ import Dashboard from "./pages/Dashboard";
 import Participants from "./pages/Participants";
 import ParticipantDetail from "./pages/ParticipantDetail";
 import Tasks from "./pages/Tasks";
-import Placeholder from "./pages/Placeholder";
+import Providers from "./pages/Providers";
+import ProviderDetail from "./pages/ProviderDetail";
+import Referrals from "./pages/Referrals";
+import Funding from "./pages/Funding";
 import Leads from "./pages/admin/Leads";
 
 function FullScreenLoader() {
@@ -60,9 +63,10 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="participants" element={<Participants />} />
             <Route path="participants/:id" element={<ParticipantDetail />} />
-            <Route path="referrals" element={<Placeholder title="Referrals" phase="Phase 2" />} />
-            <Route path="providers" element={<Placeholder title="Providers" phase="Phase 2" />} />
-            <Route path="funding" element={<Placeholder title="Funding" phase="Phase 2" />} />
+            <Route path="referrals" element={<Referrals />} />
+            <Route path="providers" element={<Providers />} />
+            <Route path="providers/:id" element={<ProviderDetail />} />
+            <Route path="funding" element={<Funding />} />
             <Route path="tasks" element={<Tasks />} />
           </Route>
 
