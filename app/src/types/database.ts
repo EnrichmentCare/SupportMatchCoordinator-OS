@@ -367,6 +367,13 @@ export interface Referral {
   created_at: string;
 }
 
+export interface Automation {
+  id: string;
+  org_id: string;
+  name: string;
+  is_active: boolean;
+}
+
 export interface Meeting {
   id: string;
   org_id: string;

@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, GitBranch, Building2, Wallet, CheckSquare,
-  Heart, LogOut, ShieldCheck, BarChart3,
+  Heart, LogOut, ShieldCheck, BarChart3, Zap,
 } from "lucide-react";
 import { useAuth } from "../context/AuthProvider";
 import { cn, initials } from "../lib/utils";
@@ -18,6 +18,7 @@ const NAV: NavItem[] = [
   { to: "/funding", label: "Funding", icon: Wallet },
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
   { to: "/reports", label: "Reports", icon: BarChart3 },
+  { to: "/automations", label: "Automations", icon: Zap },
 ];
 
 export function AppLayout() {
