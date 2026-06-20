@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, GitBranch, Building2, Wallet, CheckSquare,
   Heart, LogOut, ShieldCheck, BarChart3, Zap, Clock, MessageSquareWarning,
+  CalendarDays, ShieldAlert, FileSignature, FolderOpen, Settings as SettingsIcon,
 } from "lucide-react";
 import { useAuth } from "../context/AuthProvider";
 import { cn, initials } from "../lib/utils";
@@ -10,18 +11,32 @@ import { GlobalAddTask } from "./GlobalAddTask";
 import { AlertsBell } from "./AlertsBell";
 import { GlobalSearch } from "./GlobalSearch";
 
-type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; soon?: boolean };
-const NAV: NavItem[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/participants", label: "Participants", icon: Users },
-  { to: "/referrals", label: "Referrals", icon: GitBranch },
-  { to: "/providers", label: "Providers", icon: Building2 },
-  { to: "/funding", label: "Funding", icon: Wallet },
-  { to: "/tasks", label: "Tasks", icon: CheckSquare },
-  { to: "/billing", label: "Billable hours", icon: Clock },
-  { to: "/feedback", label: "Feedback", icon: MessageSquareWarning },
-  { to: "/reports", label: "Reports", icon: BarChart3 },
-  { to: "/automations", label: "Automations", icon: Zap },
+type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }> };
+type NavGroup = { heading: string; items: NavItem[] };
+const NAV_GROUPS: NavGroup[] = [
+  { heading: "Workspace", items: [
+    { to: "/", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/participants", label: "Participants", icon: Users },
+    { to: "/referrals", label: "Referrals", icon: GitBranch },
+    { to: "/providers", label: "Providers", icon: Building2 },
+    { to: "/calendar", label: "Calendar", icon: CalendarDays },
+    { to: "/tasks", label: "Tasks", icon: CheckSquare },
+  ]},
+  { heading: "Money", items: [
+    { to: "/funding", label: "Funding", icon: Wallet },
+    { to: "/billing", label: "Billable hours", icon: Clock },
+  ]},
+  { heading: "Compliance", items: [
+    { to: "/incidents", label: "Incidents", icon: ShieldAlert },
+    { to: "/feedback", label: "Feedback", icon: MessageSquareWarning },
+    { to: "/agreements", label: "Agreements", icon: FileSignature },
+    { to: "/documents", label: "Documents", icon: FolderOpen },
+    { to: "/reports", label: "Reports", icon: BarChart3 },
+  ]},
+  { heading: "Admin", items: [
+    { to: "/automations", label: "Automations", icon: Zap },
+    { to: "/settings", label: "Settings & team", icon: SettingsIcon },
+  ]},
 ];
 
 export function AppLayout() {
@@ -38,27 +53,29 @@ export function AppLayout() {
           </div>
           <span className="font-semibold text-ink">Coordinator OS</span>
         </div>
-        <nav className="flex-1 space-y-0.5 px-3 py-2">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === "/"}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  isActive ? "bg-brand-100 text-brand-700" : "text-ink-500 hover:bg-brand-50 hover:text-ink"
-                )
-              }
-            >
-              <item.icon className="h-4 w-4" />
-              <span className="flex-1">{item.label}</span>
-              {item.soon && (
-                <span className="rounded-full bg-brand-50 px-1.5 py-0.5 text-[10px] font-medium text-ink-500">
-                  Soon
-                </span>
-              )}
-            </NavLink>
+        <nav className="flex-1 space-y-3 overflow-y-auto px-3 py-2">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.heading}>
+              <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wide text-ink-500/60">{group.heading}</p>
+              <div className="space-y-0.5">
+                {group.items.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.to === "/"}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                        isActive ? "bg-brand-100 text-brand-700" : "text-ink-500 hover:bg-brand-50 hover:text-ink"
+                      )
+                    }
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span className="flex-1">{item.label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            </div>
           ))}
           {profile?.is_support_match_admin && (
             <NavLink
