@@ -1,4 +1,31 @@
-import type { RagStatus, SwrStatus, TaskStatus, TaskPriority, PlanManagement, TimelineEventType } from "../types/database";
+import type { RagStatus, SwrStatus, TaskStatus, TaskPriority, PlanManagement, TimelineEventType, ContactRelationship } from "../types/database";
+
+export const CONTACT_REL_LABEL: Record<ContactRelationship, string> = {
+  plan_nominee: "Plan nominee",
+  correspondence_nominee: "Correspondence nominee",
+  nominee: "Nominee",
+  guardian: "Guardian / decision-maker",
+  family: "Family",
+  emergency: "Emergency contact",
+  gp: "GP",
+  plan_manager: "Plan manager",
+  allied_health: "Allied health",
+  lac: "LAC",
+  support_coordinator: "Support coordinator",
+  other: "Other",
+};
+
+export const CONTACT_REL_OPTIONS: ContactRelationship[] = [
+  "plan_nominee", "correspondence_nominee", "guardian", "family", "emergency",
+  "gp", "plan_manager", "allied_health", "lac", "other",
+];
+
+/** Days until a date (negative = overdue). null if no date. */
+export function daysUntil(iso?: string | null): number | null {
+  if (!iso) return null;
+  const ms = new Date(iso).getTime() - Date.now();
+  return Math.ceil(ms / 86400000);
+}
 
 export const RAG_LABEL: Record<RagStatus, string> = {
   green: "On track",

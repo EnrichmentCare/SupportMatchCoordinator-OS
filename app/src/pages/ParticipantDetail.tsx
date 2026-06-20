@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, UserSearch } from "lucide-react";
+import { ArrowLeft, UserSearch, Pencil } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Card, CardBody, Badge, Button } from "../components/ui";
 import { LoadingState, ErrorState } from "../components/states";
@@ -10,13 +10,24 @@ import { TasksPanel } from "../components/panels/TasksPanel";
 import { DocumentsPanel } from "../components/panels/DocumentsPanel";
 import { SupportMatchPanel } from "../components/panels/SupportMatchPanel";
 import { RequestWorkerModal } from "../components/panels/RequestWorkerModal";
+import { PlanPanel } from "../components/panels/PlanPanel";
+import { ContactsPanel } from "../components/panels/ContactsPanel";
+import { CareTeamPanel } from "../components/panels/CareTeamPanel";
+import { EditParticipantModal } from "../components/EditParticipantModal";
 import { cn, initials } from "../lib/utils";
 import { RAG_LABEL, RAG_TONE, PLAN_MGMT_LABEL, fmtDate } from "../lib/labels";
 import type { Participant } from "../types/database";
 
-type Tab = "overview" | "timeline" | "notes" | "tasks" | "documents" | "support_match";
+type Tab =
+  | "overview" | "plan" | "health" | "care_team" | "contacts"
+  | "timeline" | "notes" | "tasks" | "documents" | "support_match";
+
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
+  { id: "plan", label: "NDIS Plan" },
+  { id: "health", label: "Health" },
+  { id: "care_team", label: "Care team" },
+  { id: "contacts", label: "Contacts" },
   { id: "timeline", label: "Timeline" },
   { id: "notes", label: "Notes" },
   { id: "tasks", label: "Tasks" },
@@ -33,6 +44,7 @@ export default function ParticipantDetail() {
   const [tab, setTab] = React.useState<Tab>("overview");
   const [refreshKey, setRefreshKey] = React.useState(0);
   const [requesting, setRequesting] = React.useState(false);
+  const [editing, setEditing] = React.useState(false);
 
   const bump = () => setRefreshKey((k) => k + 1);
 
@@ -65,7 +77,6 @@ export default function ParticipantDetail() {
         <ArrowLeft className="h-4 w-4" /> Participants
       </button>
 
-      {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-100 text-lg font-semibold text-brand-700">
@@ -82,12 +93,14 @@ export default function ParticipantDetail() {
             </p>
           </div>
         </div>
-        <Button variant="accent" onClick={() => setRequesting(true)}>
-          <UserSearch className="h-4 w-4" /> Request a Support Worker
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setEditing(true)}><Pencil className="h-4 w-4" /> Edit</Button>
+          <Button variant="accent" onClick={() => setRequesting(true)}>
+            <UserSearch className="h-4 w-4" /> Request a Support Worker
+          </Button>
+        </div>
       </div>
 
-      {/* Tabs */}
       <div className="border-b border-line">
         <nav className="-mb-px flex gap-1 overflow-x-auto">
           {TABS.map((t) => (
@@ -105,6 +118,10 @@ export default function ParticipantDetail() {
       <Card>
         <CardBody>
           {tab === "overview" && <Overview p={p} />}
+          {tab === "plan" && <PlanPanel participantId={p.id} onActivity={bump} />}
+          {tab === "health" && <Health p={p} />}
+          {tab === "care_team" && <CareTeamPanel participantId={p.id} onActivity={bump} />}
+          {tab === "contacts" && <ContactsPanel participantId={p.id} onActivity={bump} />}
           {tab === "timeline" && <TimelineFeed participantId={p.id} refreshKey={refreshKey} />}
           {tab === "notes" && <NotesPanel participantId={p.id} onActivity={bump} />}
           {tab === "tasks" && <TasksPanel participantId={p.id} onActivity={bump} />}
@@ -113,12 +130,13 @@ export default function ParticipantDetail() {
         </CardBody>
       </Card>
 
-      <RequestWorkerModal
-        participant={p}
-        open={requesting}
+      <RequestWorkerModal participant={p} open={requesting}
         onClose={() => setRequesting(false)}
-        onSubmitted={() => { setRequesting(false); bump(); setTab("support_match"); }}
-      />
+        onSubmitted={() => { setRequesting(false); bump(); setTab("support_match"); }} />
+
+      <EditParticipantModal participant={p} open={editing}
+        onClose={() => setEditing(false)}
+        onSaved={() => { setEditing(false); load(); }} />
     </div>
   );
 }
@@ -137,6 +155,7 @@ function Overview({ p }: { p: Participant }) {
     <dl className="grid grid-cols-2 gap-5 sm:grid-cols-3">
       <Detail label="Full name" value={`${p.first_name} ${p.last_name}`} />
       <Detail label="Preferred name" value={p.preferred_name} />
+      <Detail label="Pronouns" value={p.pronouns} />
       <Detail label="Date of birth" value={p.date_of_birth ? fmtDate(p.date_of_birth) : null} />
       <Detail label="Phone" value={p.phone} />
       <Detail label="Email" value={p.email} />
@@ -152,10 +171,27 @@ function Overview({ p }: { p: Participant }) {
         <Detail label="Support needs summary" value={p.support_needs_summary} />
       </div>
       {p.rag_reason && (
-        <div className="col-span-2 sm:col-span-3">
-          <Detail label="RAG reason" value={p.rag_reason} />
-        </div>
+        <div className="col-span-2 sm:col-span-3"><Detail label="RAG reason" value={p.rag_reason} /></div>
       )}
+    </dl>
+  );
+}
+
+function Health({ p }: { p: Participant }) {
+  const interpreter = p.interpreter_required
+    ? `Yes${p.interpreter_language ? ` — ${p.interpreter_language}` : ""}`
+    : "No";
+  return (
+    <dl className="grid grid-cols-2 gap-5 sm:grid-cols-3">
+      <Detail label="Primary disability" value={p.primary_disability} />
+      <Detail label="Secondary disabilities" value={p.secondary_disabilities?.join(", ")} />
+      <Detail label="Interpreter" value={interpreter} />
+      <Detail label="Communication needs" value={p.communication_needs} />
+      <Detail label="Mobility needs" value={p.mobility_needs} />
+      <Detail label="Dietary needs" value={p.dietary_needs} />
+      <Detail label="Allergies" value={p.allergies} />
+      <div className="col-span-2 sm:col-span-3"><Detail label="Medications" value={p.medications_note} /></div>
+      <div className="col-span-2 sm:col-span-3"><Detail label="Mental health considerations" value={p.mental_health_notes} /></div>
     </dl>
   );
 }

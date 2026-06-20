@@ -99,9 +99,76 @@ export interface Participant {
   hours_per_week: number | null;
   risk_flags: string[] | null;
   risk_notes: string | null;
+  // Disability & health (0004)
+  pronouns: string | null;
+  primary_disability: string | null;
+  secondary_disabilities: string[] | null;
+  communication_needs: string | null;
+  mobility_needs: string | null;
+  dietary_needs: string | null;
+  allergies: string | null;
+  medications_note: string | null;
+  mental_health_notes: string | null;
+  interpreter_required: boolean | null;
+  interpreter_language: string | null;
   assigned_coordinator: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface Plan {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  plan_number: string | null;
+  management_type: PlanManagement;
+  start_date: string | null;
+  end_date: string | null;
+  reassessment_due: string | null;
+  total_budget: number | null;
+  support_coordination_hours: number | null;
+  notes: string | null;
+  is_current: boolean;
+}
+
+export type ContactRelationship =
+  | "plan_nominee"
+  | "correspondence_nominee"
+  | "nominee"
+  | "guardian"
+  | "family"
+  | "emergency"
+  | "gp"
+  | "plan_manager"
+  | "allied_health"
+  | "lac"
+  | "support_coordinator"
+  | "other";
+
+export interface ParticipantContact {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  name: string;
+  relationship: ContactRelationship;
+  phone: string | null;
+  email: string | null;
+  is_primary: boolean;
+  notes: string | null;
+}
+
+export interface ParticipantProvider {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  provider_name: string;
+  service_type: string | null;
+  status: string;
+  contact_name: string | null;
+  contact_phone: string | null;
+  contact_email: string | null;
+  is_plan_manager: boolean;
+  notes: string | null;
 }
 
 export type ParticipantInput = Omit<
