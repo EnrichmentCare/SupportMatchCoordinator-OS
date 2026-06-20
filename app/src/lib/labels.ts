@@ -52,6 +52,18 @@ export const CAPACITY_TONE: Record<ProviderCapacity, "green" | "amber" | "red" |
   open: "green", limited: "amber", closed: "red", unknown: "neutral",
 };
 
+export const CONTACT_TYPE_LABEL: Record<string, string> = {
+  phone: "Phone", email: "Email", face_to_face: "Face to face",
+  sms: "SMS", internal: "Internal", other: "Other",
+};
+
+export function hoursFromMinutes(min?: number | null) {
+  if (!min) return "0h";
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${h ? h + "h " : ""}${m ? m + "m" : h ? "" : "0m"}`.trim();
+}
+
 export function money(n?: number | null) {
   if (n == null) return "—";
   return "$" + n.toLocaleString("en-AU", { maximumFractionDigits: 0 });

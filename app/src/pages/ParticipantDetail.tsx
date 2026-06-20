@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, UserSearch, Pencil } from "lucide-react";
+import { ArrowLeft, UserSearch, Pencil, FileText } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Card, CardBody, Badge, Button } from "../components/ui";
 import { LoadingState, ErrorState } from "../components/states";
@@ -17,6 +17,8 @@ import { FundingPanel } from "../components/panels/FundingPanel";
 import { GoalsPanel } from "../components/panels/GoalsPanel";
 import { RiskPanel } from "../components/panels/RiskPanel";
 import { MeetingsPanel } from "../components/panels/MeetingsPanel";
+import { COIPanel } from "../components/panels/COIPanel";
+import { AgreementsPanel } from "../components/panels/AgreementsPanel";
 import { EditParticipantModal } from "../components/EditParticipantModal";
 import { KeyFacts } from "../components/KeyFacts";
 import { cn, initials } from "../lib/utils";
@@ -25,7 +27,7 @@ import type { Participant } from "../types/database";
 
 type Tab =
   | "overview" | "plan" | "funding" | "goals" | "health" | "care_team" | "contacts"
-  | "risk" | "timeline" | "notes" | "tasks" | "meetings" | "documents" | "support_match";
+  | "risk" | "coi" | "agreements" | "timeline" | "notes" | "tasks" | "meetings" | "documents" | "support_match";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
@@ -36,6 +38,8 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "care_team", label: "Care team" },
   { id: "contacts", label: "Contacts" },
   { id: "risk", label: "Risk" },
+  { id: "coi", label: "Conflicts" },
+  { id: "agreements", label: "Agreements" },
   { id: "timeline", label: "Timeline" },
   { id: "notes", label: "Notes" },
   { id: "tasks", label: "Tasks" },
@@ -103,6 +107,7 @@ export default function ParticipantDetail() {
           </div>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate(`/participants/${p.id}/report`)}><FileText className="h-4 w-4" /> Report</Button>
           <Button variant="outline" onClick={() => setEditing(true)}><Pencil className="h-4 w-4" /> Edit</Button>
           <Button variant="accent" onClick={() => setRequesting(true)}>
             <UserSearch className="h-4 w-4" /> Request a Support Worker
@@ -136,6 +141,8 @@ export default function ParticipantDetail() {
           {tab === "care_team" && <CareTeamPanel participantId={p.id} onActivity={bump} />}
           {tab === "contacts" && <ContactsPanel participantId={p.id} onActivity={bump} />}
           {tab === "risk" && <RiskPanel participant={p} onParticipantChange={load} onActivity={bump} />}
+          {tab === "coi" && <COIPanel participantId={p.id} onActivity={bump} />}
+          {tab === "agreements" && <AgreementsPanel participant={p} onActivity={bump} />}
           {tab === "timeline" && <TimelineFeed participantId={p.id} refreshKey={refreshKey} />}
           {tab === "notes" && <NotesPanel participantId={p.id} onActivity={bump} />}
           {tab === "tasks" && <TasksPanel participantId={p.id} onActivity={bump} />}

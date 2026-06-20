@@ -161,6 +161,8 @@ export interface ParticipantIncident {
   reportable: boolean;
   actions: string | null;
   status: string;
+  notified_at: string | null;
+  follow_up_submitted_at: string | null;
 }
 
 export interface Plan {
@@ -223,14 +225,37 @@ export type ParticipantInput = Omit<
   "id" | "org_id" | "created_at" | "updated_at" | "assigned_coordinator"
 >;
 
+export type ContactType = "phone" | "email" | "face_to_face" | "sms" | "internal" | "other";
+
 export interface Note {
   id: string;
   org_id: string;
   participant_id: string | null;
   body: string;
   is_pinned: boolean;
+  contact_type: ContactType | null;
+  minutes: number | null;
+  billable: boolean | null;
+  goal_id: string | null;
+  occurred_at: string | null;
   created_at: string;
   created_by: string | null;
+}
+
+export interface ParticipantCOI {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  nature: string;
+  related_party: string | null;
+  disclosed: boolean;
+  disclosed_at: string | null;
+  disclosure_method: string | null;
+  options_offered: string | null;
+  participant_choice: string | null;
+  status: string;
+  notes: string | null;
+  created_at: string;
 }
 
 export interface Task {
@@ -372,6 +397,38 @@ export interface Automation {
   org_id: string;
   name: string;
   is_active: boolean;
+}
+
+export interface Feedback {
+  id: string;
+  org_id: string;
+  participant_id: string | null;
+  type: string;
+  source: string | null;
+  summary: string;
+  severity: string | null;
+  status: string;
+  resolution: string | null;
+  received_at: string;
+  resolved_at: string | null;
+}
+
+export interface ServiceAgreement {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  title: string;
+  start_date: string | null;
+  end_date: string | null;
+  supports: string | null;
+  terms: string | null;
+  parties: string | null;
+  status: string;
+  sent_at: string | null;
+  signed_at: string | null;
+  signer_name: string | null;
+  notes: string | null;
+  created_at: string;
 }
 
 export interface Meeting {

@@ -13,6 +13,18 @@ const SEV_TONE: Record<string, "neutral" | "amber" | "red"> = {
   low: "neutral", medium: "amber", high: "red", critical: "red",
 };
 
+function addBusinessDays(iso: string, days: number) {
+  const d = new Date(iso);
+  let added = 0;
+  while (added < days) {
+    d.setDate(d.getDate() + 1);
+    const day = d.getDay();
+    if (day !== 0 && day !== 6) added++;
+  }
+  return d;
+}
+function hoursUntil(d: Date) { return Math.round((d.getTime() - Date.now()) / 3600000); }
+
 export function RiskPanel({
   participant,
   onParticipantChange,
@@ -40,6 +52,15 @@ export function RiskPanel({
   }, [p.id]);
 
   React.useEffect(() => { load(); }, [load]);
+
+  async function markNotified(id: string) {
+    await supabase.from("participant_incidents").update({ notified_at: new Date().toISOString(), status: "reported" }).eq("id", id);
+    load();
+  }
+  async function markFollowUp(id: string) {
+    await supabase.from("participant_incidents").update({ follow_up_submitted_at: new Date().toISOString() }).eq("id", id);
+    load();
+  }
 
   return (
     <div className="space-y-6">
@@ -74,20 +95,52 @@ export function RiskPanel({
               description="Record reportable incidents with severity, actions taken and status." />
           ) : (
             <ul className="space-y-2">
-              {incidents.map((i) => (
-                <li key={i.id} className="rounded-lg border border-line bg-surface p-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {i.severity && <Badge tone={SEV_TONE[i.severity] ?? "neutral"}>{i.severity}</Badge>}
-                      {i.reportable && <Badge tone="red">Reportable</Badge>}
-                      <Badge tone="neutral">{i.status}</Badge>
+              {incidents.map((i) => {
+                const notifyH = hoursUntil(new Date(new Date(i.occurred_at).getTime() + 24 * 3600000));
+                const followDeadline = addBusinessDays(i.occurred_at, 5);
+                const followH = hoursUntil(followDeadline);
+                return (
+                  <li key={i.id} className="rounded-lg border border-line bg-surface p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {i.severity && <Badge tone={SEV_TONE[i.severity] ?? "neutral"}>{i.severity}</Badge>}
+                        {i.reportable && <Badge tone="red">Reportable</Badge>}
+                        <Badge tone="neutral">{i.status}</Badge>
+                      </div>
+                      <span className="text-xs text-ink-500">{fmtDateTime(i.occurred_at)}</span>
                     </div>
-                    <span className="text-xs text-ink-500">{fmtDateTime(i.occurred_at)}</span>
-                  </div>
-                  <p className="mt-1 text-sm text-ink">{i.summary}</p>
-                  {i.actions && <p className="mt-1 text-xs text-ink-500"><span className="font-medium">Actions:</span> {i.actions}</p>}
-                </li>
-              ))}
+                    <p className="mt-1 text-sm text-ink">{i.summary}</p>
+                    {i.actions && <p className="mt-1 text-xs text-ink-500"><span className="font-medium">Actions:</span> {i.actions}</p>}
+
+                    {i.reportable && (
+                      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-line pt-2 text-xs">
+                        {/* 24-hour notification */}
+                        {i.notified_at ? (
+                          <Badge tone="green">Notified {fmtDateTime(i.notified_at)}</Badge>
+                        ) : (
+                          <>
+                            <Badge tone={notifyH < 0 ? "red" : notifyH <= 6 ? "amber" : "neutral"}>
+                              {notifyH < 0 ? `Notify overdue by ${Math.abs(notifyH)}h` : `Notify Commission in ${notifyH}h`}
+                            </Badge>
+                            <button onClick={() => markNotified(i.id)} className="font-medium text-brand-700 hover:underline">Mark notified</button>
+                          </>
+                        )}
+                        {/* 5-business-day follow-up */}
+                        {i.follow_up_submitted_at ? (
+                          <Badge tone="green">Follow-up done</Badge>
+                        ) : (
+                          <>
+                            <Badge tone={followH < 0 ? "red" : followH <= 48 ? "amber" : "neutral"}>
+                              {followH < 0 ? "Follow-up overdue" : `Follow-up by ${followDeadline.toLocaleDateString("en-AU", { day: "numeric", month: "short" })}`}
+                            </Badge>
+                            <button onClick={() => markFollowUp(i.id)} className="font-medium text-brand-700 hover:underline">Mark submitted</button>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
       </div>

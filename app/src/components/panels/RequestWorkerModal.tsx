@@ -123,6 +123,11 @@ export function RequestWorkerModal({
             placeholder="Anything your team should know — stays in Coordinator OS." />
         </Field>
 
+        <p className="rounded-md bg-accent-100/60 p-2.5 text-xs text-accent-600">
+          Heads up: if your organisation is connected to Support Match, this referral may be a conflict of
+          interest. Record it on the participant's <strong>Conflicts</strong> tab to stay compliant.
+        </p>
+
         {error && <p className="text-sm text-status-red">{error}</p>}
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={onClose}>Cancel</Button>

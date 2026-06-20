@@ -9,6 +9,7 @@ import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Participants from "./pages/Participants";
 import ParticipantDetail from "./pages/ParticipantDetail";
+import ParticipantReport from "./pages/ParticipantReport";
 import Tasks from "./pages/Tasks";
 import Providers from "./pages/Providers";
 import ProviderDetail from "./pages/ProviderDetail";
@@ -16,6 +17,9 @@ import Referrals from "./pages/Referrals";
 import Funding from "./pages/Funding";
 import Reports from "./pages/Reports";
 import Automations from "./pages/Automations";
+import Billing from "./pages/Billing";
+import Feedback from "./pages/Feedback";
+import AgreementDocument from "./pages/AgreementDocument";
 import Leads from "./pages/admin/Leads";
 
 function FullScreenLoader() {
@@ -60,6 +64,10 @@ export default function App() {
           <Route path="/signup" element={<PublicOnly><Signup /></PublicOnly>} />
           <Route path="/onboarding" element={<OnboardingGuard />} />
 
+          {/* Standalone printable report (no app chrome) */}
+          <Route path="/participants/:id/report" element={<RequireAuth><ParticipantReport /></RequireAuth>} />
+          <Route path="/agreements/:id" element={<RequireAuth><AgreementDocument /></RequireAuth>} />
+
           {/* Coordinator app */}
           <Route path="/" element={<RequireAuth><AppLayout /></RequireAuth>}>
             <Route index element={<Dashboard />} />
@@ -71,6 +79,8 @@ export default function App() {
             <Route path="funding" element={<Funding />} />
             <Route path="tasks" element={<Tasks />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="feedback" element={<Feedback />} />
             <Route path="automations" element={<Automations />} />
           </Route>
 

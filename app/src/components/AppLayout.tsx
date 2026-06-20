@@ -2,12 +2,13 @@ import * as React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, GitBranch, Building2, Wallet, CheckSquare,
-  Heart, LogOut, ShieldCheck, BarChart3, Zap,
+  Heart, LogOut, ShieldCheck, BarChart3, Zap, Clock, MessageSquareWarning,
 } from "lucide-react";
 import { useAuth } from "../context/AuthProvider";
 import { cn, initials } from "../lib/utils";
 import { GlobalAddTask } from "./GlobalAddTask";
 import { AlertsBell } from "./AlertsBell";
+import { GlobalSearch } from "./GlobalSearch";
 
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; soon?: boolean };
 const NAV: NavItem[] = [
@@ -17,6 +18,8 @@ const NAV: NavItem[] = [
   { to: "/providers", label: "Providers", icon: Building2 },
   { to: "/funding", label: "Funding", icon: Wallet },
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
+  { to: "/billing", label: "Billable hours", icon: Clock },
+  { to: "/feedback", label: "Feedback", icon: MessageSquareWarning },
   { to: "/reports", label: "Reports", icon: BarChart3 },
   { to: "/automations", label: "Automations", icon: Zap },
 ];
@@ -72,9 +75,12 @@ export function AppLayout() {
       {/* Main */}
       <div className="flex flex-1 flex-col">
         <header className="flex h-14 items-center justify-between border-b border-line bg-surface px-6">
-          <div className="text-sm text-ink-500">
-            {currentOrg?.name}
-            {role && <span className="ml-2 capitalize text-ink-500/70">· {role.replaceAll("_", " ")}</span>}
+          <div className="flex items-center gap-4">
+            <GlobalSearch />
+            <div className="hidden text-sm text-ink-500 lg:block">
+              {currentOrg?.name}
+              {role && <span className="ml-2 capitalize text-ink-500/70">· {role.replaceAll("_", " ")}</span>}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <GlobalAddTask />
