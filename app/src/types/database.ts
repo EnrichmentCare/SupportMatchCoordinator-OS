@@ -13,7 +13,9 @@ export type OrgRole =
   | "support_worker";
 
 export type RagStatus = "green" | "amber" | "red";
-export type ParticipantStatus = "prospect" | "active" | "on_hold" | "exited";
+export type ParticipantStatus = "participant" | "active" | "on_hold" | "exited";
+export type FundingBucket = "core" | "capacity_building" | "capital";
+export type GoalStatus = "not_started" | "in_progress" | "achieved" | "on_hold" | "discontinued";
 export type PlanManagement = "agency_managed" | "plan_managed" | "self_managed";
 export type GenderPref = "male" | "female" | "no_preference" | "other";
 export type TaskStatus = "open" | "in_progress" | "blocked" | "done" | "cancelled";
@@ -111,9 +113,54 @@ export interface Participant {
   mental_health_notes: string | null;
   interpreter_required: boolean | null;
   interpreter_language: string | null;
+  // Risk & safeguarding + check-in (0005)
+  behaviour_support_plan: boolean | null;
+  restrictive_practices: string | null;
+  crisis_plan: string | null;
+  last_contact_at: string | null;
+  check_in_frequency_days: number | null;
   assigned_coordinator: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface FundingCategory {
+  id: string;
+  org_id: string;
+  plan_id: string;
+  participant_id: string;
+  bucket: FundingBucket;
+  name: string;
+  allocated: number;
+  used: number;
+  remaining: number;
+  alert_threshold: number | null;
+}
+
+export interface Goal {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  plan_id: string | null;
+  title: string;
+  description: string | null;
+  status: GoalStatus;
+  progress_pct: number;
+  target_date: string | null;
+  evidence: string | null;
+}
+
+export interface ParticipantIncident {
+  id: string;
+  org_id: string;
+  participant_id: string;
+  occurred_at: string;
+  severity: string | null;
+  category: string | null;
+  summary: string;
+  reportable: boolean;
+  actions: string | null;
+  status: string;
 }
 
 export interface Plan {

@@ -47,6 +47,7 @@ export function EditParticipantModal({
       dietary_needs: f.dietary_needs, allergies: f.allergies, medications_note: f.medications_note,
       mental_health_notes: f.mental_health_notes, interpreter_required: f.interpreter_required,
       interpreter_language: f.interpreter_language,
+      check_in_frequency_days: f.check_in_frequency_days,
     }).eq("id", f.id);
     setSaving(false);
     if (error) { setError(error.message); return; }
@@ -83,7 +84,7 @@ export function EditParticipantModal({
           <div className="grid grid-cols-3 gap-4">
             <Field label="Status" htmlFor="status">
               <Select id="status" value={f.status} onChange={(e) => set("status", e.target.value as ParticipantStatus)}>
-                <option value="prospect">Prospect</option><option value="active">Active</option>
+                <option value="participant">Participant</option><option value="active">Active</option>
                 <option value="on_hold">On hold</option><option value="exited">Exited</option>
               </Select>
             </Field>
@@ -104,6 +105,7 @@ export function EditParticipantModal({
             </Field>
             <Field label="Hours / week" htmlFor="hpw"><Input id="hpw" type="number" min="0" step="0.5" value={f.hours_per_week ?? ""} onChange={(e) => set("hours_per_week", e.target.value === "" ? null : Number(e.target.value))} /></Field>
             <Field label="Cultural background" htmlFor="cb"><Input id="cb" value={f.cultural_background ?? ""} onChange={(e) => set("cultural_background", e.target.value)} /></Field>
+            <Field label="Check-in every (days)" htmlFor="cif"><Input id="cif" type="number" min="0" value={f.check_in_frequency_days ?? ""} onChange={(e) => set("check_in_frequency_days", e.target.value === "" ? null : Number(e.target.value))} /></Field>
           </div>
           <Field label="Interests" htmlFor="int"><TagsInput id="int" value={f.interests ?? []} onChange={(v) => set("interests", v)} /></Field>
           <Field label="Languages" htmlFor="lang"><TagsInput id="lang" value={f.languages ?? []} onChange={(v) => set("languages", v)} /></Field>

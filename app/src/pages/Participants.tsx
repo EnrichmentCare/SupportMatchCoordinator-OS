@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthProvider";
 import { Card, CardBody, Badge, Button, Input } from "../components/ui";
 import { LoadingState, ErrorState, EmptyState } from "../components/states";
 import { AddParticipantModal } from "../components/AddParticipantModal";
-import { RAG_LABEL, RAG_TONE } from "../lib/labels";
+import { RAG_LABEL, RAG_TONE, PARTICIPANT_STATUS_LABEL } from "../lib/labels";
 import type { Participant } from "../types/database";
 
 export default function Participants() {
@@ -95,7 +95,7 @@ export default function Participants() {
                         {p.preferred_name || p.first_name} {p.last_name}
                       </p>
                       <p className="text-xs text-ink-500">
-                        {[p.suburb, p.state].filter(Boolean).join(", ") || "No location"} · {p.status}
+                        {[p.suburb, p.state].filter(Boolean).join(", ") || "No location"} · {PARTICIPANT_STATUS_LABEL[p.status]}
                       </p>
                     </div>
                     <Badge tone={RAG_TONE[p.rag_status]}>{RAG_LABEL[p.rag_status]}</Badge>

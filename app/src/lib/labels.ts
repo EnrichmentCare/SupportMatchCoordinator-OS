@@ -1,4 +1,38 @@
-import type { RagStatus, SwrStatus, TaskStatus, TaskPriority, PlanManagement, TimelineEventType, ContactRelationship } from "../types/database";
+import type { RagStatus, SwrStatus, TaskStatus, TaskPriority, PlanManagement, TimelineEventType, ContactRelationship, ParticipantStatus, FundingBucket, GoalStatus } from "../types/database";
+
+export const PARTICIPANT_STATUS_LABEL: Record<ParticipantStatus, string> = {
+  participant: "Participant",
+  active: "Active",
+  on_hold: "On hold",
+  exited: "Exited",
+};
+
+export const FUNDING_BUCKET_LABEL: Record<FundingBucket, string> = {
+  core: "Core",
+  capacity_building: "Capacity Building",
+  capital: "Capital",
+};
+
+export const GOAL_STATUS_LABEL: Record<GoalStatus, string> = {
+  not_started: "Not started",
+  in_progress: "In progress",
+  achieved: "Achieved",
+  on_hold: "On hold",
+  discontinued: "Discontinued",
+};
+
+export const GOAL_STATUS_TONE: Record<GoalStatus, "neutral" | "brand" | "green" | "amber"> = {
+  not_started: "neutral",
+  in_progress: "brand",
+  achieved: "green",
+  on_hold: "amber",
+  discontinued: "neutral",
+};
+
+export function money(n?: number | null) {
+  if (n == null) return "—";
+  return "$" + n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
+}
 
 export const CONTACT_REL_LABEL: Record<ContactRelationship, string> = {
   plan_nominee: "Plan nominee",

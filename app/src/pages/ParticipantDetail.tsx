@@ -13,21 +13,28 @@ import { RequestWorkerModal } from "../components/panels/RequestWorkerModal";
 import { PlanPanel } from "../components/panels/PlanPanel";
 import { ContactsPanel } from "../components/panels/ContactsPanel";
 import { CareTeamPanel } from "../components/panels/CareTeamPanel";
+import { FundingPanel } from "../components/panels/FundingPanel";
+import { GoalsPanel } from "../components/panels/GoalsPanel";
+import { RiskPanel } from "../components/panels/RiskPanel";
 import { EditParticipantModal } from "../components/EditParticipantModal";
+import { KeyFacts } from "../components/KeyFacts";
 import { cn, initials } from "../lib/utils";
-import { RAG_LABEL, RAG_TONE, PLAN_MGMT_LABEL, fmtDate } from "../lib/labels";
+import { RAG_LABEL, RAG_TONE, PLAN_MGMT_LABEL, PARTICIPANT_STATUS_LABEL, fmtDate } from "../lib/labels";
 import type { Participant } from "../types/database";
 
 type Tab =
-  | "overview" | "plan" | "health" | "care_team" | "contacts"
-  | "timeline" | "notes" | "tasks" | "documents" | "support_match";
+  | "overview" | "plan" | "funding" | "goals" | "health" | "care_team" | "contacts"
+  | "risk" | "timeline" | "notes" | "tasks" | "documents" | "support_match";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "plan", label: "NDIS Plan" },
+  { id: "funding", label: "Funding" },
+  { id: "goals", label: "Goals" },
   { id: "health", label: "Health" },
   { id: "care_team", label: "Care team" },
   { id: "contacts", label: "Contacts" },
+  { id: "risk", label: "Risk" },
   { id: "timeline", label: "Timeline" },
   { id: "notes", label: "Notes" },
   { id: "tasks", label: "Tasks" },
@@ -88,7 +95,7 @@ export default function ParticipantDetail() {
               <Badge tone={RAG_TONE[p.rag_status]}>{RAG_LABEL[p.rag_status]}</Badge>
             </div>
             <p className="text-sm text-ink-500">
-              {[p.suburb, p.state].filter(Boolean).join(", ") || "No location"} · {p.status}
+              {[p.suburb, p.state].filter(Boolean).join(", ") || "No location"} · {PARTICIPANT_STATUS_LABEL[p.status]}
               {p.plan_management ? ` · ${PLAN_MGMT_LABEL[p.plan_management]}` : ""}
             </p>
           </div>
@@ -100,6 +107,8 @@ export default function ParticipantDetail() {
           </Button>
         </div>
       </div>
+
+      <KeyFacts participant={p} onParticipantChange={load} onActivity={bump} />
 
       <div className="border-b border-line">
         <nav className="-mb-px flex gap-1 overflow-x-auto">
@@ -119,9 +128,12 @@ export default function ParticipantDetail() {
         <CardBody>
           {tab === "overview" && <Overview p={p} />}
           {tab === "plan" && <PlanPanel participantId={p.id} onActivity={bump} />}
+          {tab === "funding" && <FundingPanel participantId={p.id} onActivity={bump} />}
+          {tab === "goals" && <GoalsPanel participantId={p.id} onActivity={bump} />}
           {tab === "health" && <Health p={p} />}
           {tab === "care_team" && <CareTeamPanel participantId={p.id} onActivity={bump} />}
           {tab === "contacts" && <ContactsPanel participantId={p.id} onActivity={bump} />}
+          {tab === "risk" && <RiskPanel participant={p} onParticipantChange={load} onActivity={bump} />}
           {tab === "timeline" && <TimelineFeed participantId={p.id} refreshKey={refreshKey} />}
           {tab === "notes" && <NotesPanel participantId={p.id} onActivity={bump} />}
           {tab === "tasks" && <TasksPanel participantId={p.id} onActivity={bump} />}
