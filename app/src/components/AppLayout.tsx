@@ -2,10 +2,12 @@ import * as React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, GitBranch, Building2, Wallet, CheckSquare,
-  Heart, LogOut, ShieldCheck,
+  Heart, LogOut, ShieldCheck, BarChart3,
 } from "lucide-react";
 import { useAuth } from "../context/AuthProvider";
 import { cn, initials } from "../lib/utils";
+import { GlobalAddTask } from "./GlobalAddTask";
+import { AlertsBell } from "./AlertsBell";
 
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; soon?: boolean };
 const NAV: NavItem[] = [
@@ -15,6 +17,7 @@ const NAV: NavItem[] = [
   { to: "/providers", label: "Providers", icon: Building2 },
   { to: "/funding", label: "Funding", icon: Wallet },
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
+  { to: "/reports", label: "Reports", icon: BarChart3 },
 ];
 
 export function AppLayout() {
@@ -73,6 +76,8 @@ export function AppLayout() {
             {role && <span className="ml-2 capitalize text-ink-500/70">· {role.replaceAll("_", " ")}</span>}
           </div>
           <div className="flex items-center gap-3">
+            <GlobalAddTask />
+            <AlertsBell />
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
               {initials(profile?.full_name)}
             </div>

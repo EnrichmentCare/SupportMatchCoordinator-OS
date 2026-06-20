@@ -367,6 +367,20 @@ export interface Referral {
   created_at: string;
 }
 
+export interface Meeting {
+  id: string;
+  org_id: string;
+  participant_id: string | null;
+  title: string;
+  scheduled_at: string | null;
+  location: string | null;
+  attendees: string[] | null;
+  notes: string | null;
+  outcomes: string | null;
+  actions: string | null;
+  created_at: string;
+}
+
 export interface SupportMatchLead {
   request_id: string;
   reference: string;

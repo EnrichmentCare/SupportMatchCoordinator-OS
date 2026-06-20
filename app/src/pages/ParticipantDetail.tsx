@@ -16,6 +16,7 @@ import { CareTeamPanel } from "../components/panels/CareTeamPanel";
 import { FundingPanel } from "../components/panels/FundingPanel";
 import { GoalsPanel } from "../components/panels/GoalsPanel";
 import { RiskPanel } from "../components/panels/RiskPanel";
+import { MeetingsPanel } from "../components/panels/MeetingsPanel";
 import { EditParticipantModal } from "../components/EditParticipantModal";
 import { KeyFacts } from "../components/KeyFacts";
 import { cn, initials } from "../lib/utils";
@@ -24,7 +25,7 @@ import type { Participant } from "../types/database";
 
 type Tab =
   | "overview" | "plan" | "funding" | "goals" | "health" | "care_team" | "contacts"
-  | "risk" | "timeline" | "notes" | "tasks" | "documents" | "support_match";
+  | "risk" | "timeline" | "notes" | "tasks" | "meetings" | "documents" | "support_match";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
@@ -38,6 +39,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "timeline", label: "Timeline" },
   { id: "notes", label: "Notes" },
   { id: "tasks", label: "Tasks" },
+  { id: "meetings", label: "Meetings" },
   { id: "documents", label: "Documents" },
   { id: "support_match", label: "Support Match" },
 ];
@@ -137,6 +139,7 @@ export default function ParticipantDetail() {
           {tab === "timeline" && <TimelineFeed participantId={p.id} refreshKey={refreshKey} />}
           {tab === "notes" && <NotesPanel participantId={p.id} onActivity={bump} />}
           {tab === "tasks" && <TasksPanel participantId={p.id} onActivity={bump} />}
+          {tab === "meetings" && <MeetingsPanel participantId={p.id} onActivity={bump} />}
           {tab === "documents" && <DocumentsPanel participantId={p.id} onActivity={bump} />}
           {tab === "support_match" && <SupportMatchPanel participant={p} onActivity={bump} />}
         </CardBody>

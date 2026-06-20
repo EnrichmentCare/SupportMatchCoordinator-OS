@@ -14,6 +14,7 @@ import Providers from "./pages/Providers";
 import ProviderDetail from "./pages/ProviderDetail";
 import Referrals from "./pages/Referrals";
 import Funding from "./pages/Funding";
+import Reports from "./pages/Reports";
 import Leads from "./pages/admin/Leads";
 
 function FullScreenLoader() {
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="providers/:id" element={<ProviderDetail />} />
             <Route path="funding" element={<Funding />} />
             <Route path="tasks" element={<Tasks />} />
+            <Route path="reports" element={<Reports />} />
           </Route>
 
           {/* Separate Support Match admin surface */}
