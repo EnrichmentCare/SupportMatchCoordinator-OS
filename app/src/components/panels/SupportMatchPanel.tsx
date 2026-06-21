@@ -58,9 +58,9 @@ export function SupportMatchPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-ink-500">Worker requests sent to Support Match.</p>
+        <p className="text-sm text-ink-500">Service provider requests sent to Support Match.</p>
         <Button variant="accent" size="sm" onClick={() => setOpen(true)}>
-          <UserSearch className="h-4 w-4" /> Request a Support Worker
+          <UserSearch className="h-4 w-4" /> Request a Service Provider
         </Button>
       </div>
 
@@ -72,8 +72,8 @@ export function SupportMatchPanel({
         <EmptyState
           icon={UserSearch}
           title="No requests yet"
-          description="When you request a support worker, it becomes a Support Match lead and you can track it from Requested through to Placed."
-          action={<Button variant="accent" onClick={() => setOpen(true)}><UserSearch className="h-4 w-4" /> Request a Support Worker</Button>}
+          description="When you request a service provider, it becomes a Support Match lead and you can track it from Requested through to Placed."
+          action={<Button variant="accent" onClick={() => setOpen(true)}><UserSearch className="h-4 w-4" /> Request a Service Provider</Button>}
         />
       ) : (
         <ul className="space-y-3">

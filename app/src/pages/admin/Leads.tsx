@@ -41,7 +41,7 @@ export default function Leads() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Incoming support worker requests</h1>
+        <h1 className="text-2xl font-semibold">Incoming service provider requests</h1>
         <p className="text-sm text-white/60">
           Curated, consented matching details only. No participant identity or clinical data.
         </p>
@@ -64,7 +64,7 @@ export default function Leads() {
       ) : (leads?.length ?? 0) === 0 ? (
         <div className="rounded-lg border border-white/10 bg-white/5 p-2">
           <EmptyState icon={Inbox} title="No leads yet"
-            description="When a coordinator requests a support worker, the curated lead appears here." />
+            description="When a coordinator requests a service provider, the curated lead appears here." />
         </div>
       ) : (
         <div className="overflow-hidden rounded-lg border border-white/10">

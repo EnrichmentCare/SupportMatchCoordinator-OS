@@ -41,7 +41,7 @@ export function TimelineFeed({ participantId, refreshKey }: { participantId: str
       <EmptyState
         icon={Clock}
         title="Nothing here yet"
-        description="Notes, tasks, documents and support worker requests will appear on this timeline automatically."
+        description="Notes, tasks, documents and service provider requests will appear on this timeline automatically."
       />
     );
 

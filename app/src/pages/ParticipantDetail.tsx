@@ -110,7 +110,7 @@ export default function ParticipantDetail() {
           <Button variant="outline" onClick={() => navigate(`/participants/${p.id}/report`)}><FileText className="h-4 w-4" /> Report</Button>
           <Button variant="outline" onClick={() => setEditing(true)}><Pencil className="h-4 w-4" /> Edit</Button>
           <Button variant="accent" onClick={() => setRequesting(true)}>
-            <UserSearch className="h-4 w-4" /> Request a Support Worker
+            <UserSearch className="h-4 w-4" /> Request a Service Provider
           </Button>
         </div>
       </div>

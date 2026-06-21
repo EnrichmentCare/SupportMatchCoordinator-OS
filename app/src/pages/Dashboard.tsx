@@ -172,7 +172,7 @@ export default function Dashboard() {
       {/* Support Match funnel */}
       <Card>
         <div className="flex items-center justify-between border-b border-line p-5">
-          <h2 className="font-semibold text-ink">Support worker requests</h2>
+          <h2 className="font-semibold text-ink">Service provider requests</h2>
           <span className="text-sm text-ink-500">{requestTotal} total</span>
         </div>
         <CardBody>

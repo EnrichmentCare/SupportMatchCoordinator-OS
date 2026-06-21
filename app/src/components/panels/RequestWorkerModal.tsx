@@ -73,7 +73,7 @@ export function RequestWorkerModal({
 
   return (
     <Dialog open={open} onClose={onClose} size="lg"
-      title="Request a Support Worker"
+      title="Request a Service Provider"
       description="Support Match will source, screen and shortlist matched workers — free.">
       <div className="space-y-5">
         <div className="rounded-lg border border-line bg-canvas p-4">

@@ -82,7 +82,7 @@ export default function Reports() {
         <Stat label="Participants" value={data.participants.length} />
         <Stat label="Open tasks" value={data.tasksOpen} sub={`${data.tasksOverdue} overdue`} tone={data.tasksOverdue ? "amber" : "neutral"} />
         <Stat label="Active referrals" value={data.referrals.filter((r) => REFERRAL_BOARD.includes(r.stage as ReferralStage)).length} />
-        <Stat label="Worker requests" value={requestsTotal} />
+        <Stat label="Provider requests" value={requestsTotal} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
