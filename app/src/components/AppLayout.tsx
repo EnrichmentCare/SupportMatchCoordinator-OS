@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, GitBranch, Building2, Wallet, CheckSquare,
   Heart, LogOut, ShieldCheck, BarChart3, Zap, Clock, MessageSquareWarning,
-  CalendarDays, ShieldAlert, FileSignature, FolderOpen, Settings as SettingsIcon,
+  CalendarDays, ShieldAlert, FileSignature, FolderOpen, Settings as SettingsIcon, Upload, Receipt,
 } from "lucide-react";
 import { useAuth } from "../context/AuthProvider";
 import { cn, initials } from "../lib/utils";
@@ -25,6 +25,7 @@ const NAV_GROUPS: NavGroup[] = [
   { heading: "Money", items: [
     { to: "/funding", label: "Funding", icon: Wallet },
     { to: "/billing", label: "Billable hours", icon: Clock },
+    { to: "/claims", label: "NDIS claims", icon: Receipt },
   ]},
   { heading: "Compliance", items: [
     { to: "/incidents", label: "Incidents", icon: ShieldAlert },
@@ -34,6 +35,7 @@ const NAV_GROUPS: NavGroup[] = [
     { to: "/reports", label: "Reports", icon: BarChart3 },
   ]},
   { heading: "Admin", items: [
+    { to: "/import", label: "Import data", icon: Upload },
     { to: "/automations", label: "Automations", icon: Zap },
     { to: "/settings", label: "Settings & team", icon: SettingsIcon },
   ]},

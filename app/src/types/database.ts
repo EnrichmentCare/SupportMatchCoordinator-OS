@@ -238,6 +238,8 @@ export interface Note {
   billable: boolean | null;
   goal_id: string | null;
   occurred_at: string | null;
+  claimed_at: string | null;
+  claim_reference: string | null;
   created_at: string;
   created_by: string | null;
 }

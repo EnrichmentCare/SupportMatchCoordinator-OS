@@ -21,6 +21,8 @@ import Billing from "./pages/Billing";
 import Feedback from "./pages/Feedback";
 import AgreementDocument from "./pages/AgreementDocument";
 import Settings from "./pages/Settings";
+import Import from "./pages/Import";
+import Claims from "./pages/Claims";
 import CalendarPage from "./pages/Calendar";
 import Incidents from "./pages/Incidents";
 import AgreementsList from "./pages/AgreementsList";
@@ -85,12 +87,14 @@ export default function App() {
             <Route path="tasks" element={<Tasks />} />
             <Route path="reports" element={<Reports />} />
             <Route path="billing" element={<Billing />} />
+            <Route path="claims" element={<Claims />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="incidents" element={<Incidents />} />
             <Route path="feedback" element={<Feedback />} />
             <Route path="agreements" element={<AgreementsList />} />
             <Route path="documents" element={<DocumentsLibrary />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="import" element={<Import />} />
             <Route path="automations" element={<Automations />} />
           </Route>
 
