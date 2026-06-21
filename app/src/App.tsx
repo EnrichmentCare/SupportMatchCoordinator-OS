@@ -24,6 +24,8 @@ import Settings from "./pages/Settings";
 import Import from "./pages/Import";
 import Claims from "./pages/Claims";
 import ChargeItems from "./pages/ChargeItems";
+import Invoices from "./pages/Invoices";
+import InvoiceDocument from "./pages/InvoiceDocument";
 import CalendarPage from "./pages/Calendar";
 import Incidents from "./pages/Incidents";
 import AgreementsList from "./pages/AgreementsList";
@@ -75,6 +77,7 @@ export default function App() {
           {/* Standalone printable report (no app chrome) */}
           <Route path="/participants/:id/report" element={<RequireAuth><ParticipantReport /></RequireAuth>} />
           <Route path="/agreements/:id" element={<RequireAuth><AgreementDocument /></RequireAuth>} />
+          <Route path="/invoice/:participantId" element={<RequireAuth><InvoiceDocument /></RequireAuth>} />
 
           {/* Coordinator app */}
           <Route path="/" element={<RequireAuth><AppLayout /></RequireAuth>}>
@@ -90,6 +93,7 @@ export default function App() {
             <Route path="billing" element={<Billing />} />
             <Route path="claims" element={<Claims />} />
             <Route path="charge-items" element={<ChargeItems />} />
+            <Route path="invoices" element={<Invoices />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="incidents" element={<Incidents />} />
             <Route path="feedback" element={<Feedback />} />
