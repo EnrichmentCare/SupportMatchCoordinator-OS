@@ -240,8 +240,22 @@ export interface Note {
   occurred_at: string | null;
   claimed_at: string | null;
   claim_reference: string | null;
+  service_type: string | null;
+  charge_item_id: string | null;
+  unit_price: number | null;
   created_at: string;
   created_by: string | null;
+}
+
+export interface ChargeItem {
+  id: string;
+  org_id: string;
+  code: string;
+  name: string | null;
+  unit: string;
+  unit_price: number | null;
+  gst_code: string | null;
+  active: boolean;
 }
 
 export interface ParticipantCOI {

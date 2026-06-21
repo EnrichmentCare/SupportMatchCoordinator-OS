@@ -1,13 +1,13 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, CheckSquare, CalendarClock, Wallet, AlertTriangle } from "lucide-react";
+import { Bell, CheckSquare, CalendarClock, Wallet, AlertTriangle, Cake } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthProvider";
 import { fmtDate, daysUntil } from "../lib/labels";
 
 type Alert = {
   id: string;
-  kind: "task" | "review" | "funding" | "urgent";
+  kind: "task" | "review" | "funding" | "urgent" | "birthday";
   text: string;
   sub: string;
   participantId?: string;
@@ -15,8 +15,17 @@ type Alert = {
 };
 
 const ICON = {
-  task: CheckSquare, review: CalendarClock, funding: Wallet, urgent: AlertTriangle,
+  task: CheckSquare, review: CalendarClock, funding: Wallet, urgent: AlertTriangle, birthday: Cake,
 };
+
+function daysToBirthday(dob: string): number {
+  const d = new Date(dob);
+  const now = new Date();
+  const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let next = new Date(now.getFullYear(), d.getMonth(), d.getDate());
+  if (next < todayMid) next = new Date(now.getFullYear() + 1, d.getMonth(), d.getDate());
+  return Math.round((next.getTime() - todayMid.getTime()) / 86400000);
+}
 
 export function AlertsBell() {
   const { currentOrg } = useAuth();
@@ -28,7 +37,7 @@ export function AlertsBell() {
     if (!currentOrg) return;
     const today = new Date().toISOString().slice(0, 10);
     const in30 = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10);
-    const [tasks, plans, funds, urgent] = await Promise.all([
+    const [tasks, plans, funds, urgent, bdays] = await Promise.all([
       supabase.from("tasks").select("id,title,participant_id,due_date,status")
         .eq("org_id", currentOrg.id).lt("due_date", today)
         .in("status", ["open", "in_progress", "blocked"]),
@@ -38,6 +47,8 @@ export function AlertsBell() {
         .eq("org_id", currentOrg.id),
       supabase.from("participants").select("id,first_name,last_name,preferred_name,rag_reason")
         .eq("org_id", currentOrg.id).eq("rag_status", "red"),
+      supabase.from("participants").select("id,first_name,last_name,preferred_name,date_of_birth")
+        .eq("org_id", currentOrg.id).not("date_of_birth", "is", null),
     ]);
 
     const out: Alert[] = [];
@@ -63,6 +74,11 @@ export function AlertsBell() {
 
     for (const u of (urgent.data as { id: string; first_name: string; last_name: string; preferred_name: string | null; rag_reason: string | null }[]) ?? [])
       out.push({ id: "u" + u.id, kind: "urgent", text: `${pn(u)} — urgent`, sub: u.rag_reason || "Marked red", to: `/participants/${u.id}` });
+
+    for (const b of (bdays.data as (PRef & { id: string; date_of_birth: string })[]) ?? []) {
+      const dd = daysToBirthday(b.date_of_birth);
+      if (dd <= 7) out.push({ id: "b" + b.id, kind: "birthday", text: `${pn(b)} — birthday`, sub: dd === 0 ? "Today 🎉" : `In ${dd} day${dd === 1 ? "" : "s"}`, to: `/participants/${b.id}` });
+    }
 
     setAlerts(out);
   }, [currentOrg]);

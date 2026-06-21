@@ -23,6 +23,7 @@ import AgreementDocument from "./pages/AgreementDocument";
 import Settings from "./pages/Settings";
 import Import from "./pages/Import";
 import Claims from "./pages/Claims";
+import ChargeItems from "./pages/ChargeItems";
 import CalendarPage from "./pages/Calendar";
 import Incidents from "./pages/Incidents";
 import AgreementsList from "./pages/AgreementsList";
@@ -88,6 +89,7 @@ export default function App() {
             <Route path="reports" element={<Reports />} />
             <Route path="billing" element={<Billing />} />
             <Route path="claims" element={<Claims />} />
+            <Route path="charge-items" element={<ChargeItems />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="incidents" element={<Incidents />} />
             <Route path="feedback" element={<Feedback />} />

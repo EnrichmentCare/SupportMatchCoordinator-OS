@@ -52,6 +52,13 @@ export const CAPACITY_TONE: Record<ProviderCapacity, "green" | "amber" | "red" |
   open: "green", limited: "amber", closed: "red", unknown: "neutral",
 };
 
+export const SERVICE_TYPE_LABEL: Record<string, string> = {
+  direct: "Direct service",
+  non_face_to_face: "Non-face-to-face",
+  travel: "Travel",
+  non_labour: "Non-labour",
+};
+
 export const CONTACT_TYPE_LABEL: Record<string, string> = {
   phone: "Phone", email: "Email", face_to_face: "Face to face",
   sms: "SMS", internal: "Internal", other: "Other",

@@ -1,14 +1,19 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { CheckSquare, Check, Plus } from "lucide-react";
+import { CheckSquare, Check, Plus, LayoutList, CalendarRange, CalendarDays } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthProvider";
 import { Card, CardBody, Badge, Button, Input } from "../components/ui";
 import { Select } from "../components/controls";
 import { LoadingState, ErrorState, EmptyState } from "../components/states";
 import { AddTaskModal } from "../components/AddTaskModal";
+import { TaskBoard, type BoardTask } from "../components/TaskBoard";
+import { QuickLogModal } from "../components/QuickLogModal";
 import { fmtDate, daysUntil, TASK_STATUS_LABEL, TASK_PRIORITY_TONE } from "../lib/labels";
 import type { Task, Participant, TaskStatus, TaskPriority } from "../types/database";
+
+const pName = (p: { first_name: string; last_name: string; preferred_name: string | null } | null) =>
+  p ? `${p.preferred_name || p.first_name} ${p.last_name}` : null;
 
 type TaskRow = Task & { participants: Pick<Participant, "first_name" | "last_name" | "preferred_name"> | null };
 
@@ -35,6 +40,8 @@ export default function Tasks() {
   const [loading, setLoading] = React.useState(true);
   const [showDone, setShowDone] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [view, setView] = React.useState<"list" | "week" | "day">("week");
+  const [logTarget, setLogTarget] = React.useState<{ id: string; name: string } | null>(null);
 
   // Quick-add row state
   const [qTitle, setQTitle] = React.useState("");
@@ -74,12 +81,22 @@ export default function Tasks() {
     load();
   }
 
-  async function toggleDone(t: TaskRow) {
+  async function toggleDone(t: { id: string; status: string }) {
     const next: TaskStatus = t.status === "done" ? "open" : "done";
     const { error } = await supabase.from("tasks")
       .update({ status: next, completed_at: next === "done" ? new Date().toISOString() : null }).eq("id", t.id);
     if (!error) load();
   }
+
+  async function reschedule(id: string, date: string | null) {
+    setRows((prev) => prev?.map((t) => (t.id === id ? { ...t, due_date: date } : t)) ?? null);
+    await supabase.from("tasks").update({ due_date: date }).eq("id", id);
+  }
+
+  const boardTasks: BoardTask[] = (rows ?? []).map((t) => ({
+    id: t.id, title: t.title, due_date: t.due_date, status: t.status, priority: t.priority,
+    participant_id: t.participant_id, participantName: pName(t.participants),
+  }));
 
   const open = (rows ?? []).filter((t) => t.status !== "done" && t.status !== "cancelled");
   const done = (rows ?? []).filter((t) => t.status === "done");
@@ -90,7 +107,7 @@ export default function Tasks() {
   }, [open]);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-ink">Tasks</h1>
@@ -119,9 +136,22 @@ export default function Tasks() {
         </CardBody>
       </Card>
 
+      {/* View toggle */}
+      <div className="flex gap-1">
+        {([["week", "Week", CalendarRange], ["day", "Day", CalendarDays], ["list", "List", LayoutList]] as const).map(([v, label, Icon]) => (
+          <button key={v} onClick={() => setView(v)}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium ${view === v ? "bg-brand-100 text-brand-700" : "text-ink-500 hover:bg-brand-50"}`}>
+            <Icon className="h-4 w-4" /> {label}
+          </button>
+        ))}
+      </div>
+
       {loading ? <LoadingState label="Loading tasks…" />
         : error ? <ErrorState message={error} onRetry={load} />
-        : open.length === 0 ? (
+        : view !== "list" ? (
+          <TaskBoard tasks={boardTasks} view={view} onReschedule={reschedule} onToggle={toggleDone}
+            onLog={(t) => setLogTarget({ id: t.participant_id!, name: t.participantName ?? "participant" })} />
+        ) : open.length === 0 ? (
           <EmptyState icon={CheckSquare} title="No open tasks"
             description="Use the quick-add above to capture anything you need to do — for a participant or in general." />
         ) : (
@@ -142,7 +172,7 @@ export default function Tasks() {
         )}
 
       {/* Completed */}
-      {done.length > 0 && (
+      {view === "list" && done.length > 0 && (
         <div>
           <button onClick={() => setShowDone((s) => !s)} className="text-sm font-medium text-brand-700 hover:underline">
             {showDone ? "Hide" : "Show"} completed ({done.length})
@@ -159,6 +189,11 @@ export default function Tasks() {
 
       <AddTaskModal open={modalOpen} onClose={() => setModalOpen(false)}
         onCreated={() => { setModalOpen(false); load(); }} participants={participants} />
+
+      {logTarget && (
+        <QuickLogModal open onClose={() => setLogTarget(null)} participantId={logTarget.id}
+          participantName={logTarget.name} onSaved={load} />
+      )}
     </div>
   );
 }

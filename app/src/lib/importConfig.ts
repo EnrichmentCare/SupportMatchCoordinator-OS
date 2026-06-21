@@ -13,7 +13,7 @@ export interface FieldDef {
 }
 
 export interface EntityDef {
-  key: "participants" | "providers" | "contacts" | "notes" | "funding";
+  key: "participants" | "providers" | "contacts" | "notes" | "funding" | "charge_items";
   label: string;
   table: string;
   childOf?: "participants";                 // child rows must match a participant
@@ -98,6 +98,16 @@ export const ENTITIES: EntityDef[] = [
       { key: "minutes", label: "Minutes", type: "number", synonyms: ["minutes", "duration", "time", "mins"] },
       { key: "billable", label: "Billable", type: "bool", synonyms: ["billable", "claimable"] },
       { key: "occurred_at", label: "Date", type: "text", synonyms: ["date", "occurredat", "datetime", "when", "contactdate"] },
+    ],
+  },
+  {
+    key: "charge_items", label: "Charge items (price list)", table: "charge_items",
+    fields: [
+      { key: "code", label: "Support item number", required: true, type: "text", synonyms: ["code", "supportitemnumber", "itemnumber", "supportnumber", "item", "lineitem"] },
+      { key: "name", label: "Name", type: "text", synonyms: ["name", "description", "supportname", "itemname"] },
+      { key: "unit_price", label: "Unit price", type: "number", synonyms: ["unitprice", "price", "rate", "pricecap", "amount"] },
+      { key: "unit", label: "Unit", type: "text", synonyms: ["unit", "uom", "unitofmeasure"] },
+      { key: "gst_code", label: "GST code", type: "text", synonyms: ["gstcode", "gst"] },
     ],
   },
   {
